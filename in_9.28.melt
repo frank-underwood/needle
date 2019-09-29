@@ -1,0 +1,46 @@
+#T=1.0, d=5, tail=0, N=16
+#08/03/2018
+
+units lj
+dimension 3
+boundary p p p
+atom_style molecular
+
+read_data	data_p.d1.l5.tail0
+
+group	needle type 2	
+group	polymer	type 1
+
+neighbor 0.3 bin
+neigh_modify every 1 delay 0 check no
+neigh_modify exclude molecule/intra needle
+
+#Pairwise Potential
+#pair_style colloid 2.5
+#pair_coeff * * 144.000 1.0  0.0  0.0  2.5
+
+pair_style soft 2.5
+pair_coeff * * 10.0 2.5
+
+#Bonds
+bond_style fene
+bond_coeff 1 30.0 1.5 1.0 1.0
+special_bonds fene
+
+velocity all create 1.0 109345
+
+#Fix and relax
+timestep 0.01
+fix	1 needle rigid molecule
+fix 2 polymer nvt temp 1.0 1.0 0.1
+
+thermo 1
+
+run 10000
+
+#change pair_style
+
+pair_style colloid 2.5
+pair_coeff * * 144.000 1.0  0.0  0.0  2.5
+print 	"-------------------------------------------------------"
+run 10000
