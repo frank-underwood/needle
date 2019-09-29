@@ -1,5 +1,6 @@
 #T=1.0, d=5, tail=0, N=16
-#08/03/2018
+#09/29/2019
+#another try to handle overlapping atoms: minimize_command
 
 units lj
 dimension 3
@@ -16,11 +17,8 @@ neigh_modify every 1 delay 0 check no
 neigh_modify exclude molecule/intra needle
 
 #Pairwise Potential
-#pair_style colloid 2.5
-#pair_coeff * * 144.000 1.0  0.0  0.0  2.5
-
-pair_style soft 2.5
-pair_coeff * * 10.0 2.5
+pair_style colloid 2.5
+pair_coeff * * 144.000 1.0  0.0  0.0  2.5
 
 #Bonds
 bond_style fene
@@ -34,13 +32,8 @@ timestep 0.01
 fix	1 needle rigid molecule
 fix 2 polymer nvt temp 1.0 1.0 0.1
 
+minimize 1.0e-4 1.0e-6 100 1000
+
 thermo 1
 
-run 10000
-
-#change pair_style
-
-pair_style colloid 2.5
-pair_coeff * * 144.000 1.0  0.0  0.0  2.5
-print 	"-------------------------------------------------------"
-run 10000
+run 1000
